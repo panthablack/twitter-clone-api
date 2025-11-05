@@ -39,7 +39,7 @@ class TweetController extends Controller
      */
     public function show(Tweet $tweet)
     {
-        return $tweet;
+        return Tweet::with('user:id,name,handle,avatar_url')->find($tweet->id);
     }
 
     /**
