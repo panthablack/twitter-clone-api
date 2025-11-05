@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tweet;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TweetController extends Controller
@@ -12,7 +13,7 @@ class TweetController extends Controller
      */
     public function index()
     {
-        //
+        return Tweet::with('user:id,name,handle,avatar_url')->latest()->get();
     }
 
     /**
@@ -20,7 +21,17 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = User::find(1);
+
+        $validated = $request->validate(['body' => ['required', 'string', 'max:280']]);
+
+        $tweet = Tweet::create([
+            'user_id' => $user->id,
+            'body' => $validated['body'],
+        ]);
+        $tweet->save();
+
+        return $tweet;
     }
 
     /**
@@ -28,7 +39,7 @@ class TweetController extends Controller
      */
     public function show(Tweet $tweet)
     {
-        //
+        return $tweet;
     }
 
     /**
@@ -36,7 +47,16 @@ class TweetController extends Controller
      */
     public function update(Request $request, Tweet $tweet)
     {
-        //
+        $user = $tweet->user;
+
+        $validated = $request->validate(['body' => ['required', 'string', 'max:280']]);
+
+        $tweet->update([
+            'body' => $validated['body'],
+        ]);
+        $tweet->save();
+
+        return $tweet;
     }
 
     /**
@@ -44,6 +64,7 @@ class TweetController extends Controller
      */
     public function destroy(Tweet $tweet)
     {
-        //
+        $tweet->delete();
+        return response()->noContent();
     }
 }
