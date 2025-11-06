@@ -32,6 +32,14 @@ class UserController extends Controller
     }
 
     /**
+     * Display the user's tweets.
+     */
+    public function tweets(User $user)
+    {
+        return $user->tweets;
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
