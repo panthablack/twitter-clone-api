@@ -20,7 +20,8 @@ class TweetFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'body' => Str::limit(fake()->paragraph(random_int(1, 3)), 279, '') . '.'
+            'body' => Str::limit(fake()->paragraph(random_int(1, 3)), 279, '') . '.',
+            'created_at' => fake()->dateTimeBetween('-2 year', 'now'),
         ];
     }
 }
