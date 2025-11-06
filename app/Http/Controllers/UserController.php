@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class UserController extends Controller
      */
     public function tweets(User $user)
     {
-        return $user->tweets;
+        return Tweet::with('user:id,name,handle,avatar_url')->where('user_id', '=',  $user->id)->paginate(10);
     }
 
     /**

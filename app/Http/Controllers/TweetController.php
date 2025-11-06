@@ -13,7 +13,7 @@ class TweetController extends Controller
      */
     public function index()
     {
-        return Tweet::with('user:id,name,handle,avatar_url')->latest()->get();
+        return Tweet::with('user:id,name,handle,avatar_url')->latest()->paginate(10);
     }
 
     /**
