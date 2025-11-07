@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('handle')->unique();
             $table->string('avatar_url');
+            $table->string('profile_banner_url')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('link_url')->nullable();
+            $table->string('link_text')->nullable();
+            $table->string('location')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

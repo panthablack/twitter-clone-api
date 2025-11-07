@@ -25,6 +25,11 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'profile_banner_url' => 'https://picsum.photos/800',
+            'bio' => Str::limit(fake()->paragraph(random_int(1, 3)), 279, '') . '.',
+            'link_url' => 'https://manmachineltd.com',
+            'link_text' => 'ManMachine',
+            'location' => fake()->city() . ', ' . fake()->country(),
             'handle' => fake()->unique()->username(),
             'email' => fake()->unique()->safeEmail(),
             'avatar_url' => "https://i.pravatar.cc/150?img=" . random_int(1, 70),
