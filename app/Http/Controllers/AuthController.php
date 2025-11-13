@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
+class AuthController extends Controller
+{
+    /**
+     * Log in user by generating a token.
+     */
+    public function logIn(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+            'password' => 'required|string|max:255',
+            'device_name' => 'required|string|max:255',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password))
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+
+        $token = $user->createToken($request->device_name)->plainTextToken;
+
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
+    }
+
+    /**
+     * Return the successfully authenticated user.
+     */
+    public function authUser(Request $request)
+    {
+        return $request->user();
+    }
+
+    /**
+     * Log out the authenticated user by deleting all their tokens.
+     */
+    public function logOut(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->noContent();
+    }
+}

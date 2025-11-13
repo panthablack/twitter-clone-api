@@ -1,16 +1,25 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UserController;
-use App\Models\Tweet;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
-Route::get('/users/{user}', [UserController::class, 'show']);
-Route::get('/users/{user}/tweets', [UserController::class, 'tweets']);
+// Public Routes
+Route::post('/login', [AuthController::class, 'logIn']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::apiResource('tweets', TweetController::class);
+// Protected Routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Auth Routes
+    Route::get('/auth-user', [AuthController::class, 'authUser']);
+    Route::post('/logout', [AuthController::class, 'logOut']);
+
+    // User Routes
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::get('/users/{user}/tweets', [UserController::class, 'tweets']);
+
+    // Tweet Routes
+    Route::apiResource('tweets', TweetController::class);
+});
