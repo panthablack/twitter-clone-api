@@ -36,6 +36,22 @@ class AuthController extends Controller
     }
 
     /**
+     * Register a new user.
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'handle' => 'required|string|max:255|unique:users,handle',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|confirmed|string|max:255',
+            'device_name' => 'required|string|max:255',
+        ]);
+
+        return User::create($validated);
+    }
+
+    /**
      * Return the successfully authenticated user.
      */
     public function authUser(Request $request)

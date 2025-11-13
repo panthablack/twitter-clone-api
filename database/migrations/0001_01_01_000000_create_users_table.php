@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('handle')->unique();
-            $table->string('avatar_url');
+            $table->string('avatar_url')->nullable();
             $table->string('profile_banner_url')->nullable();
             $table->text('bio')->nullable();
             $table->string('link_url')->nullable();
