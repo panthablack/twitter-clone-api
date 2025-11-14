@@ -105,7 +105,7 @@ class AuthController extends Controller
      */
     public function followers()
     {
-        return Auth::user()->followedBy;
+        return Auth::user()->followers;
     }
 
     /**
