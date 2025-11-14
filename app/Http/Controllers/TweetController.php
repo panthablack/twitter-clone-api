@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TweetController extends Controller
 {
@@ -21,7 +22,9 @@ class TweetController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::find(1);
+        $user = Auth::user();
+
+        if (!$user) abort(401, 'User could not be authenticated.');
 
         $validated = $request->validate(['body' => ['required', 'string', 'max:280']]);
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -40,15 +41,33 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'handle' => 'required|string|max:255|unique:users,handle',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|confirmed|string|max:255',
-            'device_name' => 'required|string|max:255',
-        ]);
+        $validated = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'handle' => 'required|string|max:255|unique:users,handle',
+                'email' => 'required|email|max:255|unique:users,email|exists:approved_emails,email',
+                'password' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'confirmed',
+                    Password::min(12)
+                ],
+                'device_name' => 'required|string|max:255',
+            ],
+            [
+                'email.exists' => 'The email address is not on the approved list and cannot be used to register an account.  Please try another email address or contact your account administrator.',
+            ]
+        );
 
-        return User::create($validated);
+        $user = User::create($validated);
+
+        $token = $user->createToken($request->device_name)->plainTextToken;
+
+        return [
+            'user' => $user,
+            'token' => $token,
+        ];
     }
 
     /**
