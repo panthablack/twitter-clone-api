@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
 
         foreach ($users as $user) {
             // set following
-            $user->follows()->syncWithoutDetaching(fake()->randomElements(range(1, 20), random_int(1, 10)));
+            $user->following()->syncWithoutDetaching(fake()->randomElements(range(1, 20), random_int(1, 10)));
 
             // create some tweets
             Tweet::factory(random_int(1, 10))->create([

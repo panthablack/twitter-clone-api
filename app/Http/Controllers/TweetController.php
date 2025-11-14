@@ -14,9 +14,7 @@ class TweetController extends Controller
      */
     public function index()
     {
-        $following = Auth::user()->follows->pluck('id');
-
-        return Tweet::with('user:id,name,handle,avatar_url')->whereIn('user_id', $following)->latest()->paginate(10);
+        return Tweet::with('user:id,name,handle,avatar_url')->latest()->paginate(10);
     }
 
     /**

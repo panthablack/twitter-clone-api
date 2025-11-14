@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -56,13 +57,33 @@ class User extends Authenticatable
         return $this->hasMany(Tweet::class);
     }
 
-    public function follows(): BelongsToMany
+    public function following(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followed_user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'following', 'follower_id', 'followed_user_id')->withTimestamps();
     }
 
-    public function followedBy(): BelongsToMany
+    public function followers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'follows', 'followed_user_id', 'follower_id',)->withTimestamps();
+        return $this->belongsToMany(User::class, 'following', 'followed_user_id', 'follower_id',)->withTimestamps();
+    }
+
+    public function follow(User $user): void
+    {
+        $this->following()->attach($user);
+    }
+
+    public function unfollow(User $user): void
+    {
+        $this->following()->detach($user);
+    }
+
+    public function isFollowing(User $user): bool
+    {
+        return $this->following()->where('id', $user->id)->exists();
+    }
+
+    public function isFollowedBy(User $user): bool
+    {
+        return $user->followers()->where('id', Auth::user()->id)->exists();
     }
 }

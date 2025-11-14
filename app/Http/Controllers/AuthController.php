@@ -64,6 +64,8 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
+        $user->following()->attach($user->id);
+
         $token = $user->createToken($request->device_name)->plainTextToken;
 
         return [
@@ -85,7 +87,7 @@ class AuthController extends Controller
      */
     public function followedTweets()
     {
-        $following = Auth::user()->follows->pluck('id');
+        $following = Auth::user()->following->pluck('id');
 
         return Tweet::with('user:id,name,handle,avatar_url')->whereIn('user_id', $following)->latest()->paginate(10);
     }
@@ -95,7 +97,7 @@ class AuthController extends Controller
      */
     public function following()
     {
-        return Auth::user()->follows;
+        return Auth::user()->following;
     }
 
     /**

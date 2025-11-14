@@ -46,7 +46,7 @@ class UserController extends Controller
      */
     public function followedTweets(User $user)
     {
-        $following = $user->follows->pluck('id');
+        $following = $user->following->pluck('id');
 
         return Tweet::with('user:id,name,handle,avatar_url')->whereIn('user_id', $following)->latest()->paginate(10);
     }
@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function following(User $user)
     {
-        return $user->follows;
+        return $user->following;
     }
 
     /**

@@ -36,6 +36,8 @@ class AdminSeeder extends Seeder
                 'avatar_url' => $DEFAULT_ADMIN_AVATAR_URL ?? null,
             ]);
 
+            $user->following()->attach($user->id);
+
             Tweet::factory(10)->create(['user_id' => $user->id]);
         }
     }
