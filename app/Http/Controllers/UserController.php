@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -37,7 +38,33 @@ class UserController extends Controller
      */
     public function tweets(User $user)
     {
-        return Tweet::with('user:id,name,handle,avatar_url')->where('user_id', '=',  $user->id)->paginate(10);
+        return Tweet::with('user:id,name,handle,avatar_url')->where('user_id', '=',  $user->id)->latest()->paginate(10);
+    }
+
+    /**
+     * Display tweets by users that the auth user follows.
+     */
+    public function followedTweets(User $user)
+    {
+        $following = $user->follows->pluck('id');
+
+        return Tweet::with('user:id,name,handle,avatar_url')->whereIn('user_id', $following)->latest()->paginate(10);
+    }
+
+    /**
+     * Return users the auth user is following.
+     */
+    public function following(User $user)
+    {
+        return $user->follows;
+    }
+
+    /**
+     * Returns users that are following the auth user.
+     */
+    public function followers(User $user)
+    {
+        return $user->followedBy;
     }
 
     /**

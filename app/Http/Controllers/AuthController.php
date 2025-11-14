@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tweet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
@@ -76,6 +78,32 @@ class AuthController extends Controller
     public function authUser(Request $request)
     {
         return $request->user();
+    }
+
+    /**
+     * Display tweets by users that the auth user follows.
+     */
+    public function followedTweets()
+    {
+        $following = Auth::user()->follows->pluck('id');
+
+        return Tweet::with('user:id,name,handle,avatar_url')->whereIn('user_id', $following)->latest()->paginate(10);
+    }
+
+    /**
+     * Return users the auth user is following.
+     */
+    public function following()
+    {
+        return Auth::user()->follows;
+    }
+
+    /**
+     * Returns users that are following the auth user.
+     */
+    public function followers()
+    {
+        return Auth::user()->followedBy;
     }
 
     /**

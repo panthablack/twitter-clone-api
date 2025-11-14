@@ -15,10 +15,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Auth Routes
     Route::get('/auth-user', [AuthController::class, 'authUser']);
     Route::post('/logout', [AuthController::class, 'logOut']);
+    Route::get('/followers', [AuthController::class, 'followers']);
+    Route::get('/followed-tweets', [AuthController::class, 'followedTweets']);
+    Route::get('/following', [AuthController::class, 'following']);
 
     // User Routes
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::get('/users/{user}/tweets', [UserController::class, 'tweets']);
+    Route::get('/users/{user}/followers', [UserController::class, 'followers']);
+    Route::get('/users/{user}/followed-tweets', [UserController::class, 'followedTweets']);
+    Route::get('/users/{user}/following', [UserController::class, 'following']);
 
     // Tweet Routes
     Route::apiResource('tweets', TweetController::class);
