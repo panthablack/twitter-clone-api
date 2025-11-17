@@ -52,6 +52,8 @@ class TweetController extends Controller
     {
         $user = $tweet->user;
 
+        if ($user->id !== Auth::user()->id) return abort(403, 'Not allowed.');
+
         $validated = $request->validate(['body' => ['required', 'string', 'max:280']]);
 
         $tweet->update([
@@ -67,6 +69,10 @@ class TweetController extends Controller
      */
     public function destroy(Tweet $tweet)
     {
+        $user = $tweet->user;
+
+        if ($user->id !== Auth::user()->id) return abort(403, 'Not allowed.');
+
         $tweet->delete();
         return response()->noContent();
     }
