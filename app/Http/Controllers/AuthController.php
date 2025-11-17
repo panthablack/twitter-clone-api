@@ -64,7 +64,7 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
-        $user->following()->attach($user->id);
+        $user->following()->syncWithoutDetaching($user->id);
 
         $token = $user->createToken($request->device_name)->plainTextToken;
 

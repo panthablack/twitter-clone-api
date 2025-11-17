@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function follow(User $user)
     {
-        return Auth::user()->follow($user);
+        return $user->follow();
     }
 
     /**
@@ -64,7 +64,7 @@ class UserController extends Controller
      */
     public function unfollow(User $user)
     {
-        return Auth::user()->unfollow($user);
+        return $user->unfollow();
     }
 
     /**
@@ -81,6 +81,14 @@ class UserController extends Controller
     public function followers(User $user)
     {
         return $user->followers;
+    }
+
+    /**
+     * Returns users that are following the auth user.
+     */
+    public function followedByAuthUser(User $user)
+    {
+        return ['followed' => $user->isFollowedByAuthUser()];
     }
 
     /**

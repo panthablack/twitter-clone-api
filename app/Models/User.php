@@ -67,23 +67,23 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'following', 'followed_user_id', 'follower_id',)->withTimestamps();
     }
 
-    public function follow(User $user): void
+    public function follow(): void
     {
-        $this->following()->attach($user);
+        Auth::user()->following()->syncWithoutDetaching($this);
     }
 
-    public function unfollow(User $user): void
+    public function unfollow(): void
     {
-        $this->following()->detach($user);
+        Auth::user()->following()->detach($this);
     }
 
-    public function isFollowing(User $user): bool
+    public function isFollowedByAuthUser(): bool
     {
-        return $this->following()->where('id', $user->id)->exists();
+        return Auth::user()->following()->where('id', $this->id)->exists();
     }
 
-    public function isFollowedBy(User $user): bool
+    public function isFollowingAuthUser(): bool
     {
-        return $user->followers()->where('id', Auth::user()->id)->exists();
+        return $this->followers()->where('id', Auth::user()->id)->exists();
     }
 }
